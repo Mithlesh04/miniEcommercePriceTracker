@@ -45,3 +45,9 @@ class Driver:
 
     def quit(self) -> None:
         self.driver.quit()
+
+    def wait_for_page_load(self, timeout: int = 10) -> None:
+        """Wait for the page to load completely."""
+        WebDriverWait(self.driver, timeout).until(
+            lambda d: d.execute_script("return document.readyState") == "complete"
+        )

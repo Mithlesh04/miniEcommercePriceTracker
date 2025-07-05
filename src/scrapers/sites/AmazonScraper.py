@@ -25,9 +25,7 @@ class AmazonScraper(Driver):
         self.driver.get(url)
 
     def get_product_details(self) -> dict[str, str | list[str]]:
-        # use the webdriver for better handling the page loading
-        # currently this is hardcoded to wait for 3 seconds as Amazon pages can take time to load.
-        # self.driver.implicitly_wait(3)  # wait for elements to load
+        self.wait_for_page_load()
 
         error_flags = [] # to keep track of any errors encountered during scraping
         product_name = ""

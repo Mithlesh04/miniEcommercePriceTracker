@@ -1,5 +1,7 @@
 import re
 import os
+from datetime import datetime
+
 
 """
 @save_page_html
@@ -16,8 +18,9 @@ def save_page_html(url: str, page_source: str, folder: str = "./error_html_pages
     os.makedirs(folder, exist_ok=True)
 
     # Sanitize the URL into a safe filename
-    safe_name = re.sub(r'[\\/*?:"<>|]', "_", url).strip()
-    safe_name = re.sub(r'\s+', "_", safe_name)  # replace spaces with _
+    # safe_name = re.sub(r'[\\/*?:"<>|]', "_", url).strip()
+    # safe_name = re.sub(r'\s+', "_", safe_name)  # replace spaces with _
+    safe_name = datetime.now().strftime("%H:%M:%S.%f")[:-3]
     filename = f"{safe_name}.html"
 
     filepath = os.path.join(folder, filename)
