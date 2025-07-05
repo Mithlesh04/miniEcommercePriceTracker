@@ -2,6 +2,7 @@ import re
 from src.driver.driver import Driver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from src.utils.save_page_html import save_page_html
 
 """
 Example usage:
@@ -23,6 +24,10 @@ class FlipkartScraper(Driver):
         self.driver.get(url)
 
     def get_product_details(self) -> dict[str, str | list[str]]:
+        # use the webdriver for better handling the page loading
+        # currently this is hardcoded to wait for 3 seconds as Flipkart pages can take time to load.
+        # self.driver.implicitly_wait(3)  # wait for elements to load
+
         error_flags = [] # to keep track of any errors encountered during scraping
         product_name = ""
         price = ""
@@ -43,9 +48,6 @@ class FlipkartScraper(Driver):
         except:
             error_flags.append("product_name")
 
-        # assuming that once product_name is found that means the page has loaded with the product details
-        # and we can proceed to scrape the rest of the details
-
         # Price and Currency
         try:
             currency_price = self.driver.find_element(By.CSS_SELECTOR, "div.C7fEHH div.hl05eU div.Nx9bqj.CxhGGd").text.strip()
@@ -64,6 +66,7 @@ class FlipkartScraper(Driver):
 
         # Availability
         try:
+            # on flipkart, availability is shown if the product is out of stock
             availability = self.driver.find_element(By.CSS_SELECTOR, "div.DOjaWF div.cPHDOP div.Z8JjpR").text.strip() # it will return "Sold Out"
             # it can throw the error if the element is not found so it mean the product is in stock
             if availability.lower().startswith("sold out"):
@@ -71,7 +74,7 @@ class FlipkartScraper(Driver):
             else:
                 availability = 1
         except:
-            availability = 1
+            availability = 1 # if the element is not found then we assume the product is in stock
 
         
         data = {
@@ -81,8 +84,13 @@ class FlipkartScraper(Driver):
             "price": price,
             "availability": availability,
             "url": self.url,
+            "source": "main",
             # "error_flags": error_flags
         }
+        
+        if data["product_name"] == "":
+            # if product name is still not found, we will save the HTML for debugging
+            save_page_html(self.url, self.driver.page_source)
 
         self.quit() # closing the driver after scraping
 

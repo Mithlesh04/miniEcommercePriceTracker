@@ -17,7 +17,25 @@ python -m venv venv
 pip install -r requirements.txt
 python main.py
 ```
+
 ---
+
+## Assumptions
+- The product URLs to scrape are listed in a file named `product_urls.txt` located in the root directory of the project.
+- Each URL in `product_urls.txt` is on a separate line without any empty lines.
+- There will be no duplicate URLs in the `product_urls.txt` file.
+- There will be no huge number of URLs in the `product_urls.txt` file. bcoz,
+    - Error handling is not implemented.
+    - currently useragent is randomly which means it can repeat in a short time.
+    - Request rate is controlled by random delays (2–5 seconds) between requests.
+    - Data streming to csv is not there currently.
+    - We are saving csv once all URLs are processed.
+- The URLs in `product_urls.txt` are valid and accessible.
+- The script will run in an environment with internet access to fetch product details from the specified URLs.
+- Do not keep open the `scraped_prices.csv` when running the script, as it will throw an error if the file is open in write mode.
+- The scraped data will be saved in a file named `scraped_prices.csv` in the root directory of the project.
+
+
 
 ## Features
 

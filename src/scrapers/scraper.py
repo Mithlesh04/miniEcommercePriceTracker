@@ -5,6 +5,7 @@ from typing import Callable
 from urllib.parse import urlparse
 from .sites.sites import SitesMapping
 from concurrent.futures import ThreadPoolExecutor, wait
+from datetime import datetime
 
 
 class Scraper:
@@ -62,9 +63,6 @@ class Scraper:
             wait([executor.submit(self._process_scraping, site_name, url) for url in site_urls])
 
     def _process_scraping(self, site_name: str, url: str) -> None:
-        wait_time = random.randint(2, 5)  # random wait time between 2 and 5
-        time.sleep(wait_time)
-
         # calling main scraper handler
         scraper_handler = SitesMapping[site_name](url, site_name)
         product_details = scraper_handler.get_product_details()
@@ -73,11 +71,14 @@ class Scraper:
         # ONLY FOR TESTING PURPOSES to test concurrency functionality without any scraping
         # add time minutes:seconds:millionseconds to the product details
         # product_details={}
-        # product_details['scraped_at'] = time.strftime("%H:%M:%S", time.localtime())
+        # product_details['scraped_at'] = datetime.now().strftime("%H:%M:%S.%f")[:-3]
         # product_details["site_name"] = site_name
         # product_details["url"] = url
         
-        self.data.append(product_details)        
+        self.data.append(product_details)
+        wait_time = random.randint(2, 5)  # random wait time between 2 and 5
+        time.sleep(wait_time)
+        
 
     def _on_all_process_complete(self) -> None:
         print(f"Finished scraping")

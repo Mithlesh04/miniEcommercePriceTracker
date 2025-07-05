@@ -1,6 +1,9 @@
 from src.driver.driver import Driver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from src.utils.save_page_html import save_page_html
+
+
 
 """
 Example usage:
@@ -22,6 +25,10 @@ class AmazonScraper(Driver):
         self.driver.get(url)
 
     def get_product_details(self) -> dict[str, str | list[str]]:
+        # use the webdriver for better handling the page loading
+        # currently this is hardcoded to wait for 3 seconds as Amazon pages can take time to load.
+        # self.driver.implicitly_wait(3)  # wait for elements to load
+
         error_flags = [] # to keep track of any errors encountered during scraping
         product_name = ""
         price = ""
@@ -30,13 +37,9 @@ class AmazonScraper(Driver):
 
         # Product Name
         try:
-            # Wait for the product title to be present and retrieve it
             product_name = self.wait.until(EC.presence_of_element_located((By.ID, "productTitle"))).text.strip()
         except:
             error_flags.append("product_name")
-
-        # assuming that once product_name is found that means the page has loaded with the product details
-        # and we can proceed to scrape the rest of the details
 
         # Price and Currency
         try:
@@ -67,6 +70,11 @@ class AmazonScraper(Driver):
             "url": self.url,
             # "error_flags": error_flags
         }
+
+
+        if data["product_name"] == "":
+            # if product name is still not found, we will save the HTML for debugging
+            save_page_html(self.url, self.driver.page_source)
 
         self.quit() # closing the driver after scraping
 

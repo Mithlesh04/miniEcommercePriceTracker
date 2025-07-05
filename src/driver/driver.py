@@ -40,7 +40,8 @@ class Driver:
                 self.options.add_argument(option)
 
     def get_driverWait(self, timeout: int = 10) -> WebDriverWait:
-        return WebDriverWait(self.driver, timeout)
+        self.wait = WebDriverWait(self.driver, timeout)
+        return self.wait
 
     def quit(self) -> None:
         self.driver.quit()
