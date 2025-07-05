@@ -84,7 +84,6 @@ class FlipkartScraper(Driver):
             "price": price,
             "availability": availability,
             "url": self.url,
-            "source": "main",
             # "error_flags": error_flags
         }
         
