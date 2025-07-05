@@ -1,5 +1,5 @@
 import re
-from driver.driver import Driver
+from src.driver.driver import Driver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -77,8 +77,8 @@ class FlipkartScraper(Driver):
         data = {
             "site_name": self.site_name,
             "product_name": product_name,
-            "price": price,
             "currency": currency,
+            "price": price,
             "availability": availability,
             "url": self.url,
             # "error_flags": error_flags
