@@ -14,17 +14,22 @@ Example usage:
 class FlipkartScraper(Driver):
     url: str = ""
     site_name: str = ""
+    data: dict[str, str | list[str]] = {}
 
     def __init__(self, url: str, site_name: str=""):
         super().__init__()
         self.url = url
         self.site_name = site_name
+        self.fetch_url_content()
+
+    def fetch_url_content(self) -> None:
+        """Fetch the content of the URL."""
         self.driver = self.get_driver()
         self.wait = self.get_driverWait()
-        self.driver.get(url)
+        self.driver.get(self.url)
+        self.wait_for_page_load()
 
     def get_product_details(self) -> dict[str, str | list[str]]:
-        self.wait_for_page_load()
         error_flags = [] # to keep track of any errors encountered during scraping
         product_name = ""
         price = ""
@@ -41,6 +46,8 @@ class FlipkartScraper(Driver):
         # Product Name
         try:
             # Wait for the product title to be present and retrieve it
+            print("Waiting for product name element...Flipkart")
+            self.wait_for_element(By.CSS_SELECTOR, "div.C7fEHH h1._6EBuvT span.VU-ZEz")
             product_name = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.C7fEHH h1._6EBuvT span.VU-ZEz"))).text.strip()
         except:
             error_flags.append("product_name")
@@ -74,7 +81,7 @@ class FlipkartScraper(Driver):
             availability = 1 # if the element is not found then we assume the product is in stock
 
         
-        data = {
+        self.data = {
             "site_name": self.site_name,
             "product_name": product_name,
             "currency": currency,
@@ -84,12 +91,13 @@ class FlipkartScraper(Driver):
             # "error_flags": error_flags
         }
         
-        if data["product_name"] == "":
-            # if product name is still not found, we will save the HTML for debugging
-            save_page_html(self.url, self.driver.page_source)
+        if self.data["product_name"] == "":
+            print("------------Error: Product name not found in Flipkart!------------")
+            # if product name is still not found, we will save the HTML for debugging in respective of retry count
+            save_page_html(self.url, self.driver.page_source, self.site_name)
 
         self.quit() # closing the driver after scraping
 
-        return data
+        return self.data
 
     

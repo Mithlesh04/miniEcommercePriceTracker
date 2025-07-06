@@ -20,16 +20,16 @@ python main.py
 
 ---
 
-## Assumptions
+## Assumptions & Constraints
 - The product URLs to scrape are listed in a file named `product_urls.txt` located in the root directory of the project.
 - Each URL in `product_urls.txt` is on a separate line without any empty lines.
 - There will be no duplicate URLs in the `product_urls.txt` file.
 - There will be no huge number of URLs in the `product_urls.txt` file. bcoz,
     - Error handling is not implemented.
-    - currently useragent is randomly which means it can repeat in a short time.
-    - Request rate is controlled by random delays (2–5 seconds) between requests.
-    - Data streming to csv is not there currently.
-    - We are saving csv once all URLs are processed.
+    - currently useragent is randomly which means it can repeat in a short time which can lead to failure of scraping.
+    - Request rate is controlled by random delays (2–5 seconds) between requests it can lead to blockage if too many URLs are processed in a short time.
+    - Data streming to csv is not there currently which means if there are too many URLs, it can lead to memory issues or performance degradation.
+    - We are saving csv once all URLs are processed which can lead to data loss if the script fails before saving.
 - The URLs in `product_urls.txt` are valid and accessible.
 - The script will run in an environment with internet access to fetch product details from the specified URLs.
 - Do not keep open the `scraped_prices.csv` when running the script, as it will throw an error if the file is open in write mode.
@@ -47,6 +47,7 @@ python main.py
   - Site groups themselves are processed in parallel.
 - Random delays (2–5 seconds) added before each scrape to mimic human browsing behavior and reduce detection risk.
 - Outputs scraped results to `./scraped_prices.csv` in CSV format:
+- Python is installed on your system.
 
 ---
 

@@ -11,7 +11,7 @@ from datetime import datetime
 class Scraper:
     data: list[dict | None] = []
     group_urls: dict[str, list[str]] = {}
-    MAX_THREAD_WORKERS = 1  # Maximum number of concurrent threads
+    MAX_THREAD_WORKERS = 1  # Maximum number of concurrent threads. increase this number can lead to blocking of the IP address by the site
     on_complete: Callable[[list[dict | None]], None]
 
     def __init__(self, urls: list[str], on_complete: Callable[[list[dict | None]], None]):
@@ -24,7 +24,7 @@ class Scraper:
     # ex, { amazon: ["https://amazon.inw", "https://amazon.in"], "flipkart": ["https://www.flipkat.com/"] }
     def _group_urls_by_scraper(self, urls) -> None:
         for url in urls:
-            if isinstance(url, str):
+            if url and isinstance(url, str) and url.strip():
                 parsed = urlparse(url)
                 host = parsed.netloc.lower()
                 # check if this site name is allowed to scrape
@@ -64,13 +64,27 @@ class Scraper:
 
     def _process_scraping(self, site_name: str, url: str) -> None:
         # calling main scraper handler
-        scraper_handler = SitesMapping[site_name](url, site_name)
-        product_details = scraper_handler.get_product_details()
+        product_details={}
+        retry_count = 0
+
+        """
+            Why retry logic?
+            Sometimes the scraper might fail to extract product details due to various reasons (e.g., page load issues, dynamic content).
+            We implement a retry mechanism to attempt fetching the product details up to 3 times.
+        """
+        while retry_count < 3:
+            scraper_handler = SitesMapping[site_name](url, site_name)
+            product_details = scraper_handler.get_product_details()
+            if product_details and product_details.get("product_name"):
+                break
+            retry_count += 1
+            print(f"Retrying {site_name} (Attempt {retry_count})")
+            time.sleep(2)  # wait for 2 seconds before retrying
+        
         product_details["availability"] = "In stock" if product_details.get("availability", 0) else "Out of stock"
 
         # ONLY FOR TESTING PURPOSES to test concurrency functionality without any scraping
         # add time minutes:seconds:millionseconds to the product details
-        # product_details={}
         # product_details['scraped_at'] = datetime.now().strftime("%H:%M:%S.%f")[:-3]
         # product_details["site_name"] = site_name
         # product_details["url"] = url
