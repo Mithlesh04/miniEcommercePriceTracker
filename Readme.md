@@ -20,7 +20,7 @@ python main.py
 
 ---
 
-## Assumptions & Constraints
+## Assumptions & Info
 - The product URLs to scrape are listed in a file named `product_urls.txt` located in the root directory of the project.
 - Each URL in `product_urls.txt` is on a separate line without any empty lines.
 - There will be no duplicate URLs in the `product_urls.txt` file.
@@ -34,6 +34,15 @@ python main.py
 - The script will run in an environment with internet access to fetch product details from the specified URLs.
 - Do not keep open the `scraped_prices.csv` when running the script, as it will throw an error if the file is open in write mode.
 - The scraped data will be saved in a file named `scraped_prices.csv` in the root directory of the project.
+
+
+## Working Video
+`demo_videos` folder will contain the list of videos like code_walkthrough and working video of project
+
+
+## Error
+`error_html_pages` folder will contain the list of error html pages from which we got the error and due to that we were not able to get the product details
+This is only for debugging purpose!
 
 
 
