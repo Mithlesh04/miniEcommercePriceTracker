@@ -12,7 +12,7 @@ Create a virtual environment to isolate dependencies:
 
 Windows:
 ```bash 
-python -m venv venv
+python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 python main.py
