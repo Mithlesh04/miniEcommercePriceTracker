@@ -39,6 +39,11 @@ python main.py
 ## Working Video
 `demo_videos` folder will contain the list of videos like code_walkthrough and working video of project
 
+## Links:
+Working Video: https://youtu.be/6Sw0o_Ce9lY
+Code Walkthrough: https://youtu.be/F1NbzRnK2Ao
+
+
 
 ## Error
 `error_html_pages` folder will contain the list of error html pages from which we got the error and due to that we were not able to get the product details
